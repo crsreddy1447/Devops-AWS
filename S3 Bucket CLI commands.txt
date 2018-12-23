@@ -1,0 +1,80 @@
+*******S3 Bucket CLI *****
+
+*/*/*/*/*/*/ List all existing buckets */*/*/*/*/*/
+--> aws s3 ls
+
+*/*/*/*/*/*/ List all objects in a bucket */*/*/*/*/*/
+--> aws s3 ls s3://<<bucket-name>>
+EX: aws s3 ls s3://mybucket
+
+*/*/*/*/*/*/ Create a S3 bucket */*/*/*/*/*/
+--> aws s3 mb s3://<<bucket-name>> --region <location>
+EX: aws s3 ls s3://mybucket --region us-east-1
+
+*/*/*/*/*/*/ Copy a file from local folder to S3 */*/*/*/*/*/
+--> aws s3 cp <<local filename>> s3://<<bucket-name>>
+Ex: aws s3 cp raja.jpeg s3://mybucket
+
+*/*/*/*/*/*/ Add a File to S3 and specific Strorage class */*/*/*/*/*/
+--> aws s3 cp <<local filename>> s3://<<bucket-name>>/ --storage-class REDUCED_REDUNDANCY
+Ex: aws s3 cp  raja.jpeg s3://mybucket/ --storage-class REDUCED_REDUNDANCY
+
+*/*/*/*/*/*/ Sync local Folder with S3 */*/*/*/*/*/
+--> aws s3 sync . s3://<<bucket-name>>
+Ex: aws s3 sync . s3://mybucket
+
+*/*/*/*/*/*/ Sync Local folder with s3 with Deletion */*/*/*/*/*/
+--> aws s3 sync . s3://<<bucket-name>>/path --delete
+Ex:aws s3 sync . s3://mybucket/ --delete
+
+*/*/*/*/*/*/ Sync s3 with Local Folder */*/*/*/*/*/
+--> aws s3 sync s3://<<bucket-name>>/path .
+Ex: aws s3 sync s3://mybucket/ .
+
+*/*/*/*/*/*/ Sync s3 with Local Folder with Deletion */*/*/*/*/*/
+--> aws sync s3://<<bucket-name>>/path . --delete
+Ex: aws sync s3://mybucket/ . --delete
+
+*/*/*/*/*/*/ Sync Local Folder excluding few files */*/*/*/*/*/
+--> aws s3 sync . s3://<<bucket-name>>/path --exclude *.css
+Ex: aws s3 sync . s3://mybucket/ --exclude *.css
+
+*/*/*/*/*/*/ Sync Local Folder including few files */*/*/*/*/*/
+--> aws s3 sync . s3://<<bucket-name>>/path --include *.css
+Ex: aws s3 sync . s3://mybucket/ --include *.css
+
+*/*/*/*/*/*/ Sync local Folder including and excluding a few files */*/*/*/*/*/
+--> aws s3 sync . s3://<<bucket-name>> --include *.css --exclude *.txt
+Ex: aws s3 sync . s3://mybucket --include *.css --exclude *.txt
+
+*/*/*/*/*/*/ Move your S3 Bucket's Content to your Local Directory Recursively */*/*/*/*/*/
+--> aws s3 mv s3://<<bucket-name>>/path <<directory>> --recursive
+Ex: aws s3 mv s3://mybucket/ . --recursive
+
+*/*/*/*/*/*/ Move your Local Directory Content to S3 bucket Recursively */*/*/*/*/*/
+--> aws s3 mv . s3://<<bucket-name>>/path <<directory>> --recursive
+Ex: aws s3 mv . s3://mybucket/ --recursive
+
+*/*/*/*/*/*/ Remove or Delete an Empty Bucket */*/*/*/*/*/
+--> aws s3 rb s3://<<bucket-name>>
+Ex: aws s3 rb s3://mybucket
+
+*/*/*/*/*/*/ Remove or Delete a Bucket with Objects */*/*/*/*/*/
+--> aws s3 rb s3://<<bucket-name>> --force
+Ex: aws s3 rb s3://mybucket --force
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

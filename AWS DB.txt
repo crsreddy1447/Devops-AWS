@@ -1,0 +1,25 @@
+///////AWS DATABASE////
+
+create-db-security-group
+create a subnet group
+Create db instance
+create-db-instance-read-replica
+
+
+1.
+create-db-security-group
+--db-security-group-name 
+--db-security-group-description 
+EX: aws rds create-db-security-group --db-security-group-name mysecgroup --db-security-group-description "My Test Security Group"
+
+"VpcId": "vpc-92648cea
+VpcId": "vpc-006fdd6cb5d696339
+SubnetId": "subnet-0fd8fb2bb82a64cb4
+ 
+2.
+create-db-subnet-group
+--db-subnet-group-name 
+--db-subnet-group-description 
+--subnet-ids 
+EX:  aws rds create-db-subnet-group --db-subnet-group-name mySubnetgroup --db-subnet-group-description db securitygroup --subnet-ids sub-1234567889
+

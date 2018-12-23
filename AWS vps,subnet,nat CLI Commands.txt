@@ -1,0 +1,194 @@
+VPC CONNECTION--- SUBNET CONNECTION--- Internet Gateway---
+1. Create a VPC with cidr 10.50.0.0/16. Enable DNS host.
+2. Create SUBNET and enable auto assign IP.
+   Web server cidr 10.50.1.0/24 (public)
+   App server cidr 10.50.2.0/24 (private)
+   DB server cidr 10.50.3.0/24 (private)
+3. Create INTERNET GATEWAY and attatch to VPC.
+4. Use default route table and add subnet to it. 
+5. Configure route towards Internet gateway so that VM's can send traffic outside VPC.
+6. Create a NAT gateway and select public subnet.
+7. Create a new routing table and add private subnet(DB) with nat gateway id.
+8. Create route towards NAT Gateway so that all traffic sent by DB server will goto NAT Gateway.
+
+9. Deploy VM's in public and DB in private and check communication. by ping.
+example goto machine 1 and type "ping IP address of machine2"
+10. Login to Web and from there connect to DB
+11. Ping command
+
+****Create a VPC with cidr 10.50.0.0/16. Enable DNS host.***
+aws ec2 create-vpc --cidr-block 10.50.0.0/16
+"VpcId": "vpc-0ce94235e03943526"
+
+
+****Create SUBNET and enable auto assign IP*******
+
+aws ec2 create-subnet --cidr-block 10.50.1.0/24 --vpc-id vpc-0ce94235e03943526
+SubnetId": "subnet-0f5adff0e1543d953
+
+aws ec2 create-subnet --cidr-block 10.50.2.0/24 --vpc-id vpc-0ce94235e03943526
+"SubnetId": "subnet-0c07a5d6892805566"
+
+aws ec2 create-subnet --cidr-block 10.50.3.0/24 --vpc-id vpc-0ce94235e03943526
+SubnetId": "subnet-0cfaf7ae2c609dbf3
+
+*****Create INTERNET GATEWAY and attatch to VPC.*******
+aws ec2 create-internet-gateway
+
+InternetGatewayId": "igw-0a8cb4b0a736a2b47"
+
+aws ec2 attach-internet-gateway --internet-gateway-id igw-0a8cb4b0a736a2b47 --vpc-id vpc-0ce94235e03943526
+
+******Use default route table and add subnet to it****
+
+aws ec2 create-route-table --vpc-id vpc-0ce94235e03943526
+
+"RouteTableId": "rtb-00062b44762da39b9" Public
+
+"RouteTableId": "rtb-007dbca3f90f7baeb" Private
+
+create routes
+aws ec2 create-route --route-table-id rtb-00062b44762da39b9 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-0a8cb4b0a736a2b47
+
+**associate-route-table***
+
+aws ec2 associate-route-table --route-table-id rtb-00062b44762da39b9 --subnet-id subnet-0f5adff0e1543d953
+"AssociationId": "rtbassoc-017888074661ff7ad"
+
+aws ec2 associate-route-table --route-table-id rtb-007dbca3f90f7baeb --subnet-id subnet-0c07a5d6892805566
+"AssociationId": "rtbassoc-01fd76d1358e04640"
+
+aws ec2 allocate-address
+"AllocationId": "eipalloc-0779f7b19c1ed4a9d"
+
+*******Create a NAT gateway and select public subnet.****
+
+aws ec2 create-nat-gateway --allocation-id eipalloc-0779f7b19c1ed4a9d --subnet-id subnet-0f5a
+dff0e1543d953
+
+NatGatewayId": "nat-062e59f9589092d30"
+
+aws ec2 create-route --route-table-id rtb-007dbca3f90f7baeb --destination-cidr-block 0.0.0.0/0 --nat-gateway-id nat-062e59f9589092d30
+
+*****Deploy VM's in public and DB in private and check communication. by ping.*****
+
+Create security group
+aws ec2  create-security-group --description "webserver sgroup" --group-name webserver --vpc-
+id vpc-0ce94235e03943526
+
+"GroupId": "sg-0b19cfac75fc01226"
+
+aws ec2  create-security-group --description "appserver sgroup" --group-name appserver --vpc-
+id vpc-0ce94235e03943526
+
+"GroupId": "sg-015eb43743b6c1947"
+
+
+
+aws ec2 authorize-security-group-ingress --group-id sg-0b19cfac75fc01226 --protocol tcp --por
+t 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0b19cfac75fc01226 --protocol tcp --por
+t 80 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0b19cfac75fc01226 --protocol tcp --por
+t 443 --cidr 0.0.0.0/0
+
+Create Network ACL
+
+aws ec2 create-network-acl --vpc-id vpc-0ce94235e03943526
+
+NetworkAclId": "acl-035b1c6a7237e98db
+public subnet 10.50.1.0/24
+
+NetworkAclId": "acl-05b141587d2b83e15
+Private subnet 10.50.2.0/24
+
+****ACL Rules for the Public Subnet***
+
+aws ec2 create-network-acl-entry --network-acl-id acl-035b1c6a7237e98db --ingress --rule-numb
+er 105 --protocol tcp --port-range From=80,To=80 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --network-acl-id acl-035b1c6a7237e98db --ingress --rule-numb
+er 110 --protocol tcp --port-range From=443,To=443 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --network-acl-id acl-035b1c6a7237e98db --ingress --rule-numb
+er 120 --protocol tcp --port-range From=22,To=22 --cidr-block 0.0.0.0/0 --rule-action allow
+
+****Egress***
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-035b1c6a7237e98db --rule-numb
+er 105 --protocol tcp --port-range From=80,To=80 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-035b1c6a7237e98db --rule-numb
+er 110 --protocol tcp --port-range From=443,To=443 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-035b1c6a7237e98db --rule-numb
+er 120 --protocol tcp --port-range From=1433,To=1433 --cidr-block 10.50.2.0/24 --rule-action allow
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-035b1c6a7237e98db --rule-numb
+er 140 --protocol tcp --port-range From=32768,To=65535 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-035b1c6a7237e98db --rule-numb
+er 150 --protocol tcp --port-range From=22,To=22 --cidr-block 10.50.2.0/24 --rule-action allow
+
+
+****ACL Rules for the Private Subnet***
+***ingress***
+
+aws ec2 create-network-acl-entry --ingress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 130 --protocol tcp --port-range From=3389,To=3389 --cidr-block 10.50.1.0/24 --rule-action allow
+
+aws ec2 create-network-acl-entry --ingress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 106 --protocol tcp --port-range From=1433,To=1433 --cidr-block 10.50.1.0/24 --rule-action allow
+
+aws ec2 create-network-acl-entry --ingress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 140 --protocol tcp --port-range From=1024,To=65535 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --ingress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 120 --protocol tcp --port-range From=22,To=22 --cidr-block 10.50.1.0/24 --rule-action allow
+
+
+
+***egress***
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 130 --protocol tcp --port-range From=443,To=443 --cidr-block 0.0.0.0/0 --rule-action allow
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 107 --protocol tcp --port-range From=80,To=80 --cidr-block 0.0.0.0/0 --rule-action allow
+
+
+
+aws ec2 create-network-acl-entry --egress --network-acl-id acl-05b141587d2b83e15 --rule-numb
+er 500 --protocol -1 --cidr-block 0.0.0.0/0 --rule-action deny
+
+
+**/*/*/*/* Deploy VM's in public and DB in private and check communication. by ping.****////
+
+****Public****
+ami-0d1000aff9a9bad89
+vpc-0ce94235e03943526
+subnet-0f5adff0e1543d953
+sg-015eb43743b6c1947
+
+aws ec2 run-instances --image-id ami-0d1000aff9a9bad89 --instance-type t2.micro --security-group-ids sg-015eb43743b6c1947 --key-name rajatest --count 1 --subnet
+-id subnet-0f5adff0e1543d953
+
+InstanceId": "i-0fbe1fcdeaab2cc88"
+
+***Private***
+vpc-0ce94235e03943526
+subnet-0c07a5d6892805566
+sg-015eb43743b6c1947
+
+aws ec2 run-instances --image-id ami-0d1000aff9a9bad89 --instance-type t2.micro --security-group-ids sg-015eb43743b6c1947 --key-name rajatest --count 1 --subnet
+-id subnet-0c07a5d6892805566
+
+InstanceId": "i-08ad545183632c675"
+
+
+
+
+
+
+
+

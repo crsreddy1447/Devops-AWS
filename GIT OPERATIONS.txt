@@ -1,0 +1,147 @@
+*********************Quality Thought Notes ***********************************************
+GIT is a three phased commit
+It has three stages
+1. Working Tree
+2. Staging Area / Indexing area
+3. Local Repo
+
+Working Tree is a working folder where code is written by an individual.
+In my work 
+ADD
+Staging Area is the place where changes has to be added
+Commit
+After staging area is completed then it is committed to Local Repo
+*** While committing it consider three factor ***
+a) What is the time (Ex: default time of system)
+b) Who is committing (Ex: $ git config --global user.email xxxxx $ git config --global user.name xxxx)
+c) What are the changes with commit message (EX: git commit -m "<commit message>")
+
+************************Process diagram***********************************************************
+Working Tree ---**ADD + File Name**---> Staging Area ---**COMMIT + Message**--> Local Repo
+
+***Note***
+--> Git never give importance to empty folders.
+--> git reset --hard only remove files that a part of git
+--> git stores data in SHA-256 Hash algorithm. For same data same Hask id is given
+--> Git never do anything to untracked files in branching concept
+
+
+
+
+
+
+
+
+
+
+
+******************************** END *****************************************************
+Create a GITHUB account
+Create a repository in GITHUB(Remote)
+Install GIt on LOCAL machine Ex: GIT FOR WINDOWS.
+Create a folder in Local Machine
+Open the GIT BASH HERE inside the folder.
+
+*****Create Repo******
+
+$ git init---> to initialize git repository on local machine.
+              We can see a folder .git on local machine.
+			  
+*****Syncing Repo*****
+
+$ git remote add origin "<Link of remote Repo>"  
+Ex: git remote add origin "https://github.com/crsreddy1447/RAJA.git"
+we can get this link after signup to github click on clone.
+
+$ git pull origin master -----> To fetch all the files from central repo to local repo.
+
+******Making Changes********
+To access to github use below 2 steps
+
+$ git config --global user.email "crsreddy1447@gmail.com"
+$ git config --global user.name "crsreddy1447"
+
+
+$ git status ----> Tell you which files are added to index and are ready to commit.
+
+$ git add -----> This will add files to your index.
+
+$ git add -A  ----> to add all the files to staging area
+
+$ git add -u ----> to add modified files
+
+$ git commit  -----> Will commit to local repo
+Ex: git commit -m "<commit message>"
+
+$ git commit -a -m "<commit message>"  ----> to commit by adding files to local repo.
+
+$ git log ----> It will show entire logs of files and commit with message.
+
+***$ git reset --hard  ---> It rests the modified work done in working tree and staging area
+
+$ git clean -fd < Dir Path>  ---> to delete or remove a newly created file
+
+$ git checkout --<file Path>  ---> to reset a specific file in working tree
+
+$ git log --oneline  ---> to get short commit IDs 
+
+$ git checkout <commit id>  ---> to move across history or commits 
+
+$ git cat-file -p <full commit id>  ---> to see the content in that commit.
+
+
+
+******Parallel Development*****
+
+####Branching#### ----> It help in creating branches and combine code to master
+
+$ git branch <branch name> -----> This will create a  new branch
+
+$ git checkout <branch name or master> ----> switch to other branch or master
+Ex: git checkout master ----> switches to master
+    git checkout firstbranch -----> switches to first branch.
+	
+####Merging####	----> to merge branches to Master.
+*Note: while doing this merge you have to be in master.
+
+$ git merge <name of the branch that has to be merged with master>
+Ex: git merge firstbranch
+Now we can see entire content of firstbranch in master
+*Note:It integrates the changes made in different branches into one single branch 
+
+####Rebasing#### ----> Similar to merge. But on to tip of master in a linear way.
+
+$ git rebase <from which branch the data have to merge>
+Ex: (master branch)  $ git rebase firstbranch ----> it merge the data from firstbranch to master
+*Note: it is used when changes made in one branch needs to be reflected in another branch
+
+******* GIT FLOW******
+Connecting Local repo with remote repo
+
+1. SSH connection
+2. Generate keygen
+3. open key file
+4. goto setting ---> ssh and GPG keys ---> new ssh key
+5. paste the key 
+6. connect using $ ssh -T git@github.com
+
+$ ssh-keygen
+$ cat /c/Users/Rajashekar/.ssh/id_rsa.pub
+$ ssh -T git@github.com
+
+************************** END ***********************************************************
+
+
+  
+
+
+///IMPORTANT Terms\\\\
+
+git stash ---> It is used to develop a feature. It is not related to normal work. 
+               It will break up the branch completely. 
+			   To apply this to branch use $ git stash apply
+Stashing: It is used when changes made in one branch needs to be reflected in another branch 
+			   
+git pull = git fetch + git merge
+git pull and git fetch are same but fetch will create a branch and sent it to
+									pull will directly sent to master branch

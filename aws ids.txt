@@ -1,0 +1,69 @@
+VpcId": "vpc-01397012145c7f846
+Security Group Id "GroupId": "sg-00c7cfc8fac66dea4"
+
+1.Public SubnetId": "subnet-0ea9bd84889cd2b95
+2.Private SubnetId": "subnet-0fa21e5f1983202f0
+
+InternetGatewayId": "igw-0f7c11231b5ed30f0
+1. RouteTableId": "rtb-03363f99cef54023e"
+2. RouteTableId":  "rtb-0a71494f6e192b30e"
+
+go to UI and goto nat gateway click on create EIP 
+allocation-id eipalloc-09784301836bb917d
+
+NatGatewayId": "nat-0bb7075a9d003fbb0",
+"SubnetId": "subnet-0ea9bd84889cd2b95"
+"AllocationId": "eipalloc-028d7b915a7c7711d"
+
+aws configure
+
+create-route ----destination-cidr-block 0.0.0.0/0 --gateway-id igw-08b246f93427ad46e 
+--route-table-id rtb-025b6c94651b82e96
+
+
+aws ec2 run-instances --image-id ami-5b673c34 --key-name awspractise --instance-type t2.micro --security-group-ids sg-0207957454e22172c --subnet-id subnet-0281e249ce07a6bc9 --associate-public-ip-address --count 1
+
+Instance ID :i-07d6f40169715c46c
+
+Start:
+aws ec2 start-instances --instance-ids i-07d6f40169715c46c
+Stop:
+aws ec2 stop-instances --instance-ids i-
+
+
+
+Securiy group
+
+aws ec2 create-security-group --description webserver --group-name mywebserver --vpc-id vpc-03df6cbf448fdf3e5
+
+"GroupId": "sg-023594629d28b27ef"
+
+For Inbound
+aws ec2 authorize-security-group-ingress --group-id sg-068eee27275eed3c1 --port 22,80 --cidr 0.0.0.0/0 --protocol tcp
+
+NACL
+aws ec2 create-network-acl --vpc-id vpc-03df6cbf448fdf3e5
+
+"NetworkAclId": "acl-0e7d7f2f50db1f608"
+
+aws ec2 create-network-acl-entry --ingress --cidr-block 192.168.0.0/16 
+--network-acl-id acl-0e05c00ed549b2870 --port-range From=80,To=80 
+--protocol all --rule-action allow --rule-number 200
+
+aws ec2 create-network-acl-entry --ingress --cidr-block 192.168.0.0/16 
+--network-acl-id acl-0e05c00ed549b2870 --port-range From=22,To=22 
+--protocol all --rule-action allow --rule-number 210
+
+aws ec2 create-network-acl-entry --egress --cidr-block 192.168.0.0/16 
+--network-acl-id acl-0e05c00ed549b2870 --port-range From=22,To=22 
+--protocol all --rule-action allow --rule-number 100
+
+aws ec2 describe-network-acls
+
+ "NetworkAclAssociationId": "aclassoc-04d50aff95addde33",
+ "NetworkAclId": "acl-0ccc2882dd12cfd1d",
+ "SubnetId": "subnet-0df4dac9736ffdabb"
+
+aws ec2 replace-network-acl-association --association-id aclassoc-04d50aff95addde33 --network-acl-id acl-0ccc2882dd12cfd1d
+
+NewAssociationId": "aclassoc-04d50aff95addde33"

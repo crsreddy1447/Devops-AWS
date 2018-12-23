@@ -1,0 +1,113 @@
+*****************LINUX COMMANDS*************
+Command is a executable file
+
+* Every command or exe file should be at /usr/bin/
+----> sudo cp <file name> /usr/bin/
+
+1. mnt---> is a default mount dir  or copy inode numbers
+2. proc---> processors id 
+3. opt---> 3rd party lib will under this file
+4. root---> only super user can enter
+5. var---> It contains logs information
+6. man ls ---> manual page of ls
+7. gcc <filename> -o <filename .exe> ---> to execute a file
+
+
+commands:----------------
+. --> current dir
+.. --> parent dir
+ls -il --> list with inode value
+
+/*/*/*/*/* cat command **/*/*/*
+cat --> display the content of the file
+cat > <filename> --> to write data into file. after writing press ctrl+data
+      ex: cat >1.c 
+      raja is jsfnganfnfjer.
+      ctrl+d
+cat >> <file name> --> If file already exists then it get added
+cat <filename> > <filename> --> copy from source to dest
+
+move--> mv <source filename> <dest filename> 
+copy--> cp <source filename> <dest filename> 
+
+/*/*/*/***** remove or delete file or dir ***/*/*/*/
+rm --> remove an empty file
+rm -f --> remove non empty file
+dir:
+mkdir--> to create a dir
+rmdir--> to remove empty dir
+rmdir -r --> to delete non empty dir
+
+/*/*/*/*/*/****** CHMOD *******/*/*/*/**
+chmod ---> change file mode or permission       X      X     X
+1. Group-->g                                 User   Group   Others
+2. User-->u                   1      1     1
+3. Other-->o               Read   Write  Execute
+4. All-->a
+
+4 stands for "read",
+2 stands for "write",
+1 stands for "execute", and
+0 stands for "no permission." 
+
+Syntax :chmod <options> <permissions> <file name>
+
+Ex: chmod a+x <filename> ---> all have exe permission
+     chmod u+w <filename> ---> user have write permission
+	 
+chown---> used to change owner of a file
+ex: chown raja 1.can
+Syntax: chown [Options]... NewOwner File...
+        chown [Options]... :Group File... 	 
+        chown [OWNER] [ [:.] [GROUP] ]	 
+	 
+Find---> To search for a file in a directory
+Syntax: find <directory> -name <file type>
+Ex:     find ./ -name "* .txt" (or)
+        find ~ -name '*txt'  
+             ----> this means that search for all txt files in current dir
+			 
+/*/*/*/*/****** Process Status *****/*/*/*/*/*/*/
+ps --> Process Status
+syntax: ps [options]
+$ ps au  --> to print all active process
+$ ps -ef  --> To perform a full-format listing
+$ ps -ef | more to get page wise
+
+search 
+
+ps -ef | grep <keyword>
+
+Tail: tail command, as the name implies, print the last N number of data of the given input
+Syntax: tail [OPTION]... [FILE]...
+EX: $ tail -3 state.txt  -->prints last 3 lines
+    $ tail +25 state.txt --> prints from 25th line till end
+
+**********whoami/logname/finger*******
+finger ---> finger looks up and displays information about system users
+
+************Process kill***********
+pkill <exe file>
+kill -9 <file id>
+	
+	
+**********restart and shutdown***********
+			 
+shutdown --> init 0
+restart --> init 6	
+
+****stty -a	 --> to see the commands shortcuts and their purpose	 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+			 
+	 
+	 
+	 
+	 
+	 

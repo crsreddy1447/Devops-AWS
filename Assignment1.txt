@@ -1,0 +1,97 @@
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+
+VpcId": "vpc-0ab0b7cfcfe1d7615"
+
+aws ec2 create-subnet --vpc-id vpc-0ab0b7cfcfe1d7615 --cidr-block 10.0.1.0/24
+
+WEB SubnetId": "subnet-05eaee5a88b851b21
+
+aws ec2 create-subnet --vpc-id vpc-0ab0b7cfcfe1d7615 --cidr-block 10.0.2.0/24
+
+Bussiness SubnetId": "subnet-0c4fc79e8333a8fc5
+
+aws ec2 create-subnet --vpc-id vpc-0ab0b7cfcfe1d7615 --cidr-block 10.0.3.0/24
+
+DB SubnetId": "subnet-0a044b3b15ec91026
+
+aws ec2 create-route-table --vpc-id vpc-0ab0b7cfcfe1d7615
+
+1. RouteTableId": "rtb-00bb7b153cec7cd62
+2. RouteTableId": "rtb-0354900034d67a125"
+3. RouteTableId": "rtb-0ad118213178f20a0"
+
+aws ec2 create-internet-gateway
+
+1.InternetGatewayId": "igw-0c86a69f8cba5bc6a"
+
+aws ec2 attach-internet-gateway --internet-gateway-id igw-0c86a69f8cba5bc6a --vpc-id vpc-0ab0
+b7cfcfe1d7615 --region us-west-2
+
+aws ec2 create-route-table --vpc-id vpc-0ab0b7cfcfe1d7615
+
+RouteTableId": "rtb-01d559ce0710ce793" 
+
+aws ec2 create-route --route-table-id rtb-01d559ce0710ce793 --destination-cidr-block 0.0.0.0/
+0 --gateway-id igw-0c86a69f8cba5bc6a
+
+Associate Route Table to a Subnet:
+
+aws ec2 associate-route-table --route-table-id rtb-01d559ce0710ce793 --subnet-id subnet-05eae
+e5a88b851b21
+
+AssociationId": "rtbassoc-01bcba2607d314ef7
+
+
+aws ec2  create-security-group --description mygroup --group-name mygroup --vpc-id vpc-0ab0b7
+cfcfe1d7615
+
+GroupId": "sg-04d0d32c1b105fbc3"
+
+aws ec2 authorize-security-group-ingress --group-id sg-04d0d32c1b105fbc3 --protocol tcp --por
+t 80 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-04d0d32c1b105fbc3 --protocol tcp --por
+t 443 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-04d0d32c1b105fbc3 --protocol tcp --por
+t 8080 --cidr 0.0.0.0/0
+
+aws ec2 allocate-address
+
+AllocationId": "eipalloc-079cbf20657232eb7"
+
+aws ec2 create-nat-gateway --allocation-id eipalloc-079cbf20657232eb7 --subnet-id subnet-0c4f
+c79e8333a8fc5
+NatGatewayId": "nat-012ae3af4f2752ebe",
+SubnetId": "subnet-0c4fc79e8333a8fc5
+
+aws ec2 create-nat-gateway --allocation-id eipalloc-079cbf20657232eb7 --subnet-id subnet-0a04
+4b3b15ec91026
+NatGatewayId": "nat-0906026c14923e110",
+SubnetId": "subnet-0a044b3b15ec91026
+
+aws ec2 create-network-acl --vpc-id vpc-0ab0b7cfcfe1d7615
+
+NetworkAclId": "acl-0045e200a03496069"
+
+aws ec2 create-network-acl-entry --ingress --cidr-block 10.0.2.0/24 --network-acl-id acl-0045
+e200a03496069 --port-range From=80,To=80 --protocol all --rule-action allow --rule-number 200
+
+
+aws ec2 run-instances --image-id ami-0d1000aff9a9bad89 --instance-type t2.micro --security-group
+-ids sg-04d0d32c1b105fbc3 --key-name awstest --count 1 --subnet-id subnet-05eaee5a88b851b21
+
+InstanceId": "i-0ee71ab8f7be48466"
+
+aws ec2 run-instances --image-id ami-0d1000aff9a9bad89 --instance-type t2.micro --security-group
+-ids sg-04d0d32c1b105fbc3 --key-name awstest --count 1 --subnet-id subnet-0c4fc79e8333a8fc5
+
+"InstanceId": "i-069b140091d657773"
+
+aws ec2 run-instances --image-id ami-0d1000aff9a9bad89 --instance-type t2.micro --security-group
+-ids sg-04d0d32c1b105fbc3 --key-name awstest --count 1 --subnet-id subnet-0a044b3b15ec91026
+
+"InstanceId": "i-0bed47cb51f96d657"
+
+
+
+
+

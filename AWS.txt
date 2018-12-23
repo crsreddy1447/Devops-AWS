@@ -1,0 +1,173 @@
+How to Connect Power shell
+1.Install AWS CLI for Windows
+2.Create IAM id from AWS UI
+3.Open Power shell as Admin
+4.Type "aws configure"
+5.It will ask for Access Id and Security Key and also Region, Format.
+
+By doing all the steps you will be connected to AWS
+
+********************************************************
+Private IPs
+10.0.0.0     -10.255.255.255
+172.16.0.0   -172.31.255.255
+192.168.0.0  -192.168.255.255
+Remaining are Public IPs
+*/*/*/*/*/*/*//*//*/*/////******///*******////**/*/*/*/*
+
+****How to create,launch,stop,terminate an Instance from AWS CLI?*****
+Commands:
+  run-instances----->
+1.  aws ec2 run-instances --image-id --instance-type --security-group-ids
+      --key-name --count --subnet-id 
+Example: 
+    aws ec2 run-instances --image-id ami-abc1234 --count 1 
+	--instance-type m4.large --key-name keypair 
+	--user-data file://my_script.txt --subnet-id subnet-abcd1234 
+	--security-group-ids sg-abcd1234	  
+  
+AWS CLI ami 2018: "InstanceId": "i-0b0dd2a2f57392c00"  
+RedHat 7.5 : "InstanceId": "i-0ece23056d2c0e663"
+Ubuntu 16:  "InstanceId": "i-044ea9c22acbc63a5"
+	
+
+1.  Start-instances----->
+   aws ec2 start-instances --instance-ids
+Example: 
+   aws ec2 start-instances --instance-ids i-1234567890abcdef0 
+
+2.  Stop-instances------>
+   aws ec2 stop-instances --instance-ids
+Example: 
+   aws ec2 stop-instances --instance-ids i-1234567890abcdef0 
+   
+3.  terminate-instances------>
+   aws ec2 terminate-instances --instance-ids
+Example: 
+   aws ec2 terminate-instances --instance-ids i-1234567890abcdef0
+   
+   
+*****How to create a security group *****
+  aws ec2  create-security-group --description --group-name --vpc-id
+Example:   aws ec2 create-security-group --group-name MySecurityGroup 
+                 --description "My security group" --vpc-id vpc-1a2b3c4d
+				 
+"GroupId": "sg-00c7cfc8fac66dea4"				 
+				 
+****authorize-security-group-ingress(inbound)*****
+  aws ec2 authorize-security-group-ingress --group-id --ip-permissions --protocol --port
+Example: aws ec2 authorize-security-group-ingress --group-id sg-903004f8 
+             --protocol tcp --port 22 --cidr 203.0.113.0/24  
+			 
+			 
+   aws ec2 authorize-security-group-ingress --group-id sg-00c7cfc8fac66dea4 
+          --port 22 --cidr 0.0.0.0/0 --protocol tcp			 
+				 
+****delete-security-group****
+  aws ec2 delete-security-group --group-name 
+Example: aws ec2 delete-security-group --group-name MySecurityGroup  
+		 aws ec2 delete-security-group --group-id sg-903004f8		 
+		 
+		 
+
+/*/*/*/How to create a Network in aws/*/*/*/
+1.Create a vpc
+2.Create subnets
+3.Create Route Table
+4.Create Route
+5.Create Internet gateways
+6.Generate Elastic IP
+7.Create NAT gateways
+8.Create Network ACLs
+	
+	
+1.	create-vpc
+--->aws ec2 create-vpc --cidr-block	
+Example: aws ec2 create-vpc --cidr-block 10.0.0.0/16
+
+"VpcId": "vpc-01397012145c7f846"
+
+2.	create-subnet
+--->aws ec2 create-subnet --cidr-block --vpc-id
+Example: aws ec2 create-subnet --vpc-id vpc-a01106c2 --cidr-block 10.0.1.0/24
+
+1.Public SubnetId": "subnet-0ea9bd84889cd2b95
+2.Private SubnetId": "subnet-0fa21e5f1983202f0
+
+3.  create-route-table
+--->aws ec2 create-route-table --vpc-id
+Example: aws ec2 create-route-table --vpc-id vpc-a01106c2
+
+Public: "RouteTableId": "rtb-03363f99cef54023e"
+Private: "RouteTableId": "rtb-0a71494f6e192b30e"
+
+4.  create-route
+--->aws ec2 create-route --route-table-id --destination-cidr-block	--gateway-id	 
+Example: aws ec2 create-route --route-table-id rtb-22574640  
+             --destination-cidr-block 0.0.0.0/0 --gateway-id igw-c0a643a9
+
+			 
+			 
+5.	create-internet-gateway
+--->aws ec2 create-internet-gateway 
+aws ec2 create-internet-gateway
+
+InternetGatewayId": "igw-0f7c11231b5ed30f0
+
+aws ec2 attach-internet-gateway --vpc-id "vpc-01397012145c7f846" --internet-gateway-id "igw-0f7c11231b5ed30f0" --region ap-south-1
+
+6.	allocate-address
+--->aws ec2 allocate-address
+
+"PublicIp": "13.127.255.14",
+    "AllocationId": "eipalloc-09784301836bb917d",
+    "Domain": "vpc"
+
+	
+7.	create-nat-gateway
+--->aws ec2 create-nat-gateway --allocation-id --subnet-id
+Example:aws ec2 create-nat-gateway --subnet-id subnet-1a2b3c4d  
+           --allocation-id eipalloc-37fc1a52 	
+
+        "NatGatewayId": "nat-0bb7075a9d003fbb0",
+        "SubnetId": "subnet-0ea9bd84889cd2b95",
+        "VpcId": "vpc-01397012145c7f846"
+ 
+
+8.  create-network-acl
+--->aws ec2 create-network-acl --vpc-id
+Example: aws ec2 create-network-acl --vpc-id vpc-a01106c2
+
+        "NetworkAclId": "acl-0e7d7f2f50db1f608",
+        "VpcId": "vpc-01397012145c7f846"
+
+	aws ec2 create-network-acl-entry --ingress --cidr-block 10.10.2.0/24 
+	       --network-acl-id acl-0e7 d7f2f50db1f608 --port-range From=80,To=80 
+	        --protocol all --rule-action allow --rule-number 200
+
+aws ec2 create-network-acl-entry --ingress --cidr-block 192.168.0.0/16 
+--network-acl-id acl-0e05c00ed549b2870 --port-range From=22,To=22 
+--protocol all --rule-action allow --rule-number 210
+
+aws ec2 create-network-acl-entry --egress --cidr-block 192.168.0.0/16 
+--network-acl-id acl-0e05c00ed549b2870 --port-range From=22,To=22 
+--protocol all --rule-action allow --rule-number 100			 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
