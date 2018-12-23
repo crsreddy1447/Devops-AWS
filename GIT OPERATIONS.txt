@@ -63,6 +63,20 @@ To access to github use below 2 steps
 $ git config --global user.email "crsreddy1447@gmail.com"
 $ git config --global user.name "crsreddy1447"
 
+****************How to Add GITHUB REPO and PUSH from CLI****************************
+
+$ git remote add origin git@github.com:<UserName>/<RepoName>.git
+
+Ex: git remote add origin git@github.com:crsreddy1447/MBA_Project.git
+
+$ git push -u origin master
+
+$ $ git remote -v
+
+origin  git@github.com:crsreddy1447/MBA_Project.git (fetch)
+origin  git@github.com:crsreddy1447/MBA_Project.git (push)
+
+*********************************************************************************
 
 $ git status ----> Tell you which files are added to index and are ready to commit.
 
