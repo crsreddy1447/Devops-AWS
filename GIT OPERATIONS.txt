@@ -53,6 +53,8 @@ $ git remote add origin "<Link of remote Repo>"
 Ex: git remote add origin "https://github.com/crsreddy1447/RAJA.git"
 we can get this link after signup to github click on clone.
 
+$ git push origin master -----> To send all the files from local repo to central repo
+
 $ git pull origin master -----> To fetch all the files from central repo to local repo.
 
 ******Making Changes********
@@ -133,8 +135,6 @@ $ ssh -T git@github.com
 
 
   
-
-
 ///IMPORTANT Terms\\\\
 
 git stash ---> It is used to develop a feature. It is not related to normal work. 
