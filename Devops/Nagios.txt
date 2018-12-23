@@ -1,0 +1,33 @@
+Nagios is a Monitoring tool
+
+###################### Nagios Installation On Ubuntu 16 ##########################
+
+************Prerequisites********* 
+Ubuntu 16.x / 17.x =====
+
+sudo apt-get update
+sudo apt-get install -y autoconf gcc libc6 make wget unzip apache2 php libapache2-mod-php7.0 libgd2-xpm-dev
+
+***********Compile*****************
+cd /tmp/nagioscore-nagios-4.4.1/
+sudo ./configure --with-httpd-conf=/etc/apache2/sites-enabled
+sudo make all
+
+**********Create User And Group***************
+sudo make install-groups-users
+sudo usermod -a -G nagios www-data
+
+***********Install Binaries**************
+sudo make install
+
+***********Install Service / Daemon********
+sudo make install-daemoninit
+
+***************Install Command Mode*******
+sudo make install-commandmode
+
+*************Install Configuration Files**************
+sudo make install-config
+
+
+
