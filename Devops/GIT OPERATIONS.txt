@@ -4,6 +4,8 @@ It has three stages
 1. Working Tree
 2. Staging Area / Indexing area
 3. Local Repo
+4. Remote Area
+5. Staging Area
 
 Working Tree is a working folder where code is written by an individual.
 In my work 
@@ -24,16 +26,19 @@ Working Tree ---**ADD + File Name**---> Staging Area ---**COMMIT + Message**--> 
 --> git reset --hard only remove files that a part of git
 --> git stores data in SHA-256 Hash algorithm. For same data same Hask id is given
 --> Git never do anything to untracked files in branching concept
+--> Repositories created with git init --bare are called bare repos. 
+    They are structured a bit differently from working directories. 
+	First off, they contain no working or checked out copy of your source files
+	And second, bare repos store git revision history of your repo in the root 
+	folder of your repository instead of in a .git subfolder. 
+	Note… bare repositories are customarily given a .git extension.
+--> How to remove a file
+git rm file1.txt
+git commit -m "remove file1.txt"
+But if you want to remove the file only from the Git repository and not remove it from the filesystem, use:
 
-
-
-
-
-
-
-
-
-
+git rm --cached file1.txt
+git commit -m "remove file1.txt"	
 
 ******************************** END *****************************************************
 Create a GITHUB account
@@ -105,7 +110,7 @@ $ git checkout <commit id>  ---> to move across history or commits
 
 $ git cat-file -p <full commit id>  ---> to see the content in that commit.
 
-
+$ cat .gitignore   ---> file specifies intentionally untracked files that Git should ignore
 
 ******Parallel Development*****
 
@@ -130,6 +135,36 @@ Now we can see entire content of firstbranch in master
 $ git rebase <from which branch the data have to merge>
 Ex: (master branch)  $ git rebase firstbranch ----> it merge the data from firstbranch to master
 *Note: it is used when changes made in one branch needs to be reflected in another branch
+
+$ git rebase -i HEAD~<Position from top>  --> To modify/delete the commit which is not pushed to Remote Repo
+EX: git rebase -i HEAD~2
+*Note: This shouldnot done if I it is commited to Remote Repo
+
+######Cherry PICK##########
+-->Sometimes you don't want to merge a whole branch into another, and only need to pick one or two specific commits. 
+   This process is called 'cherry picking'.
+From new-features branch run 
+$ git log --oneline  -->to get a better log of your commits history. Note that the commit hash is what we need to start the cherry picking. 
+
+Checkout the branch where you want to cherry pick the specific commits. In this case master branch:
+$ git checkout master
+
+Now we can cherry pick from new-features branch:
+$git cherry-pick d467740
+  -->This will cherry pick the commit with hash d467740 and add it as a new commit on the master branch. Note: it will have a new (and different) commit ID in the master branch.
+
+***If you want to cherry pick more than one commit in one go, you can add their commit IDs separated by a space:
+$ git cherry-pick d467740 de906d4
+
+***If the cherry picking gets halted because of conflicts, resolve them and
+$ git cherry-pick --continue
+
+########Stashing###########
+you don’t want to do a commit of half-done work just so you can get back to this point later. 
+The answer to this issue is the git stashing.
+$ $ git stash
+$ git stash list
+$ git stash apply stash@{0} -->Apply one of the older stashes, you can specify it by naming it
 
 ******* GIT FLOW******
 Connecting Local repo with remote repo
