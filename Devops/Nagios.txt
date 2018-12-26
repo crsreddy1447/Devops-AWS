@@ -20,17 +20,19 @@ Redhat Oregon: Public DNS:  ec2-52-33-162-142.us-west-2.compute.amazonaws.com
                Public IP:   52.33.162.142
                Private DNS: ip-172-31-37-66.us-west-2.compute.internal
 			   Private IP:  172.31.37.66
-               App: Apache 
+               App: Apache webserver
 
 				
 Ubuntu Ohio: Public DNS:  ec2-3-17-56-65.us-east-2.compute.amazonaws.com				
              Public IP:   3.17.56.65
              Private DNS: ip-172-31-30-210.us-east-2.compute.internal
 			 Private IP:  172.31.30.210	
-             App: Tomcat7
+             App: Tomcat7 appserver 8080
 			 
 GCP Ubuntu 16 IP: 35.231.216.60	
               App: Mysql		   
+
+			  
 
 Ubuntu Nagios: Public DNS:  ec2-3-17-69-151.us-east-2.compute.amazonaws.com				
                Public IP:   3.17.69.151
@@ -44,7 +46,26 @@ Application Monitoring
 Metrics --> CPU, RAM, DISK				
 Diagnostics: Send Logs
 
+General Options:
+ -------------------------
+        Nagios executable:  nagios
+        Nagios user/group:  nagios,nagios
+       Command user/group:  nagios,nagios
+             Event Broker:  yes
+        Install ${prefix}:  /usr/local/nagios
+    Install ${includedir}:  /usr/local/nagios/include/nagios
+                Lock file:  /run/nagios.lock
+   Check result directory:  /usr/local/nagios/var/spool/checkresults
+           Init directory:  /lib/systemd/system
+  Apache conf.d directory:  /etc/apache2/sites-enabled
+             Mail program:  /bin/mail
+                  Host OS:  linux-gnu
+          IOBroker Method:  epoll
 
+ Web Interface Options:
+ ------------------------
+                 HTML URL:  http://localhost/nagios/
+                  CGI URL:  http://localhost/nagios/cgi-bin/
 
 
 ###################### Nagios Installation On Ubuntu 16 ##########################
@@ -358,11 +379,11 @@ Once you've verified your configuration files and fixed any errors you can go ah
 
 
 
-**********************************************************************************
-##################################################################################
-/*/*/*/*/*/*/*/*/*/*/*/*/*/*/ My CFG FILES /*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
-###################################################################################
-************************************************************************************
+**********************************************************************************************************************************************
+##############################################################################################################################################
+/*/*/*/*/*/*/*/*/*/*/*/*/*/*/ My CFG FILES /*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*//*/*/*///*/*/*/*/*/*/*
+#############################################################################################################################################
+*********************************************************************************************************************************************
 
 By file:
 
@@ -440,5 +461,250 @@ define service {
     check_command           check_ping!100.0,80%!500.0,100%
 }
 
+------------------------>By DIR:------------------------------------------------------------>
+
+###############################################################################
+#
+# HOST DEFINITION
+#
+###############################################################################
+# Define a host for the local machine
+
+define host {
+
+    use                     linux-server            ; Name of host template to use
+                                                    ; This host definition will inherit all variables that are defined
+                                                    ; in (or inherited by) the linux-server host template definition.
+    host_name               localhost
+    alias                   localhost
+    address                 127.0.0.1
+}
 
 
+define host {
+
+    use                     linux-server            ; Name of host template to use
+                                                    ; This host definition will inherit all variables that are defined
+                                                    ; in (or inherited by) the linux-server host template definition.
+    host_name               ec2-54-206-5-198.ap-southeast-2.compute.amazonaws.com
+    alias                   sydneyweb01
+    address                 54.206.5.198
+
+}
+
+define host {
+
+    use                     linux-server            ; Name of host template to use
+                                                    ; This host definition will inherit all variables that are defined
+                                                    ; in (or inherited by) the linux-server host template definition.
+    host_name               ec2-54-165-250-109.compute-1.amazonaws.com
+    alias                   nvirginaweb01
+    address                 54.165.250.109
+
+}
+
+define host {
+    use                     linux-server
+    host_name               ec2-34-201-132-202.compute-1.amazonaws.com
+    alias                   nvirginaweb02
+    address                 34.201.132.202
+}
+
+define host {
+    use                     linux-server
+    host_name               ec2-18-236-197-243.us-west-2.compute.amazonaws.com
+    alias                   oregontomcat01
+    address                 18.236.197.243
+}
+
+define host {
+    use                     linux-server
+    host_name               ec2-34-216-167-73.us-west-2.compute.amazonaws.com
+    alias                   oregontomcat02
+    address                 34.216.167.73
+}
+
+define host {
+    use                      linux-server
+    host_name                ec2-13-233-143-100.ap-south-1.compute.amazonaws.com
+    alias                    mumbaiweb01
+    address                  13.233.143.100
+
+}
+
+###############################################################################
+#
+# HOST GROUP DEFINITION
+#
+###############################################################################
+
+# Define an optional hostgroup for Linux machines
+
+define hostgroup {
+
+    hostgroup_name          all-servers           ; The name of the hostgroup
+    alias                   All Servers           ; Long name of the group
+    members                 ec2-54-206-5-198.ap-southeast-2.compute.amazonaws.com,ec2-54-165-250-109.compute-1.amazonaws.com,ec2-34-201-132-202.compute-1.amazonaws.com,ec2-18-236-197-243.us-west-2.compute.amazonaws.com,ec2-34-216-167-73.us-west-2.compute.amazonaws.com,ec2-13-233-143-100.ap-south-1.compute.amazonaws.com,40.113.233.191,23.96.126.126               ; Comma separated list of hosts that belong to this group
+}
+
+define hostgroup {
+    hostgroup_name          web-servers
+    alias                   Web Servers
+    members                 ec2-54-165-250-109.compute-1.amazonaws.com,ec2-34-201-132-202.compute-1.amazonaws.com,ec2-13-233-143-100.ap-south-1.compute.amazonaws.com
+}
+
+define hostgroup {
+    hostgroup_name          db-servers
+    alias                   DB Servers
+    members                 ec2-54-206-5-198.ap-southeast-2.compute.amazonaws.com
+}
+
+define hostgroup {
+    hostgroup_name          tomcat-servers
+    alias                   Tomcat Servers
+    members                 ec2-18-236-197-243.us-west-2.compute.amazonaws.com,ec2-34-216-167-73.us-west-2.compute.amazonaws.com
+}
+
+define hostgroup {
+    hostgroup_name          windows-servers
+    alias                   Windows Servers
+    members                 40.113.233.191,23.96.126.126
+}
+
+###############################################################################
+# CONTACTS.CFG - SAMPLE CONTACT/CONTACTGROUP DEFINITIONS
+#
+#
+# NOTES: This config file provides you with some example contact and contact
+#        group definitions that you can reference in host and service
+#        definitions.
+#
+#        You don't need to keep these definitions in a separate file from your
+#        other object definitions.  This has been done just to make things
+#        easier to understand.
+#
+###############################################################################
+
+
+
+###############################################################################
+#
+# CONTACTS
+#
+###############################################################################
+
+# Just one contact defined by default - the Nagios admin (that's you)
+# This contact definition inherits a lot of default values from the
+# 'generic-contact' template which is defined elsewhere.
+
+define contact {
+
+    contact_name            nagiosadmin             ; Short name of user
+    use                     generic-contact         ; Inherit default values from generic-contact template (defined above)
+    alias                   Nagios Admin            ; Full name of user
+    email                   nagios@localhost ; <<***** CHANGE THIS TO YOUR EMAIL ADDRESS ******
+}
+
+define contact {
+    contact_name            qtdevops
+    use                     generic-contact
+    alias                   qtdevops
+    email                   qtdevops@gmail.com
+}
+
+define contact {
+    contact_name            qtkhaja
+    use                     generic-contact
+    alias                   qtkhaja
+    email                   qtkhaja@gmail.com
+}
+
+define contact {
+    contact_name            khaja
+    use                     generic-contact
+    alias                   khaja
+    email                   shaik.khaja.ibrahim@gmail.com
+}
+
+
+###############################################################################
+#
+# CONTACT GROUPS
+#
+###############################################################################
+
+# We only have one contact in this simple configuration file, so there is
+# no need to create more than one contact group.
+
+define contactgroup {
+
+    contactgroup_name       admins
+    alias                   Nagios Administrators
+    members                 nagiosadmin,qtdevops,qtkhaja,khaja
+}
+
+###############################################################################
+#
+# SERVICE DEFINITIONS
+#
+###############################################################################
+
+# Define a service to "ping" the local machine
+
+define service {
+
+    use                     local-service           ; Name of service template to use
+    hostgroup_name          all-servers
+    service_description     PING
+    check_command           check_ping!300.0,20%!500.0,60%
+}
+
+
+# Define a service to check SSH on the local machine.
+# Disable notifications for this service by default, as not all users may have SSH enabled.
+
+define service {
+
+    use                     local-service           ; Name of service template to use
+    hostgroup_name          web-servers
+    service_description     SSH
+    check_command           check_ssh
+    notifications_enabled   0
+}
+
+
+
+# Define a service to check HTTP on the local machine.
+# Disable notifications for this service by default, as not all users may have HTTP enabled.
+
+define service {
+
+    use                     local-service           ; Name of service template to use
+    hostgroup_name          web-servers
+    service_description     HTTP
+    check_command           check_http
+    notifications_enabled   0
+}
+
+
+define service {
+    use                     local-service
+    hostgroup_name          tomcat-servers
+    service_description     tomcat
+    check_command           check_tcp!8080  
+}
+
+
+define service {
+    use                     local-service
+    hostgroup_name          db-servers
+    service_description     mysql
+    check_command           check_tcp!3306
+}
+
+
+cfg_dir=/nagios/Nagios/commands
+cfg_dir=/nagios/Nagios/contacts
+cfg_dir=/nagios/Nagios/hostgroups
+cfg_dir=/nagios/Nagios/other
+cfg_dir=/nagios/Nagios/services

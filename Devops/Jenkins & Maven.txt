@@ -1,0 +1,30 @@
+################################# Jenkins & Maven ##########################################
+Build tools:
+
+They do the following:
+1. Build the code
+2. Execute the unit test
+3. Packaged the code into some format
+
+JAVA= Maven
+C#= MS Build
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
