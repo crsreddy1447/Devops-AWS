@@ -76,7 +76,9 @@ Ex: git remote add origin git@github.com:crsreddy1447/MBA_Project.git
 
 $ git push -u origin master
 
-$ $ git remote -v
+$ git remote -v
+
+$ git pull <remote>
 
 origin  git@github.com:crsreddy1447/MBA_Project.git (fetch)
 origin  git@github.com:crsreddy1447/MBA_Project.git (push)

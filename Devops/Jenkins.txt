@@ -1,0 +1,203 @@
+################################# Jenkins ##########################################
+Jenkins
+Jenkins is a self-contained, open source automation server which can be used to automate 
+all sorts of tasks related to building, testing, and delivering or deploying software.
+
+
+Needed softwares:
+
+1. Java
+2. Maven
+3. Git
+
+4. Set up various software environment
+
+
+************************************ Theory ***********************************
+->Jenkins act like a scheduler or a cron
+->It needs a user for running it
+->Default user is jenkins. Who has to be added to sudo group for sudo permissions
+->Path variable has to be given by user
+->Plugins will not install software. User has to install software for running the plugin
+->Jenkins run commands on behalf of user
+
+Build Triggers Methods
+
+###################################################
+#                                                 #
+#GIT ------- GIT HOOKS/ WEB HOOKS -------->Jenkins#
+#GIT---------------------------------------Jenkins#
+#GIT<-------POLL SCM ----------------------Jenkins#
+#                                                 #
+###################################################
+-> Git Hooks: Where git send updates to jenkins
+A (Downstream of B)
+|
+B (Upstream of A)(Downstream of C)
+|
+C (Upstream of B)
+
+-> Pool SCM: Where Jenkins look for updates
+
+-> Build Executors by default is one by one. It can be made parallel which is not recommended in real time
+    Options: General->tick Execute concurrent builds if necessary option
+	** Use a throttle Builds to do in a smooth way
+
+#################### Installation #################################################################
+
+
+***Before Installing jenkins install
+1.JAVA
+2.GIT
+3.MAVEN
+
+
+
+########################### INSTALLATION STEPS ############################
+**********************Installing the Default JRE/JDK***************************************************
+$ sudo apt-get update
+$ sudo apt-get install default-jre
+$ sudo apt-get install default-jdk
+
+----------Managing Java ( Only if Multiple Java Packages are available)---------
+
+$ sudo update-alternatives --config java
+$ sudo update-alternatives --config command
+
+------Setting the JAVA_HOME Environment Variable--------------
+
+$ sudo update-alternatives --config java
+ /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+
+$ sudo nano /etc/environment
+Add this path ==> JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"
+
+$ source /etc/environment
+$ echo $JAVA_HOME
+
+
+                             (OR)
+
+$ sudo apt-get install openjdk-8-jdk
+$ echo $JAVA_HOME
+$ ls /usr/lib/jvm/
+$ ls /usr/lib/jvm/java-8-openjdk-amd64/
+
+Export method of declaring varialbles is not permanent
+bash profile for individuals
+
+
+$ sudo vi /etc/environment
+added the above path
+JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"  ---> Permanent multi user method
+
+$ source /etc/environment  --> to call for reloading of path
+$ echo $JAVA_HOME
+$ sudo -i
+$ echo $JAVA_HOME
+/usr/lib/jvm/java-8-openjdk-amd64/
+
+
+************************* GIT ***************************************************
+
+--------------- To Install Git with Apt-------------------------
+$ sudo apt-get update
+$ sudo apt-get install git
+
+************************MAVEN***********************************************
+
+$ sudo apt-get -y install maven -y
+$ mvn --version
+
+Apache Maven 3.3.9
+Maven home: /usr/share/maven
+Java version: 1.8.0_191, vendor: Oracle Corporation
+Java home: /usr/lib/jvm/java-8-openjdk-amd64/jre
+
+
+$ echo $M2_HOME
+$ sudo vi /etc/environment
+add maven variable
+M2_HOME="/usr/share/maven"
+
+$ source /etc/environment  --> to call for reloading of path
+$ echo $M2_HOME
+$ sudo -i
+$ echo $M2_HOME
+
+------------------ Jenkins Installation ----------------------------------
+
+$ wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+$ sudo echo deb https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list
+$ sudo apt-get update
+$ sudo apt-get install jenkins
+$ sudo systemctl start jenkins
+$ sudo systemctl status jenkins
+$ sudo ufw allow 8080
+$ sudo ufw status
+
+Users details
+$ jenkins
+O/P
+ubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash
+crsreddy15:x:1001:1002::/home/crsreddy15:/bin/bash
+jenkins:x:113:117:Jenkins,,,:/var/lib/jenkins:/bin/bash
+
+For Password
+
+$ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+Backup: /var/lib/jenkins  --> this backup will give us entire backup
+
+$ sudo -i
+$ su jenkins
+$ cd ~   ----> to goto home dir
+$ pwd
+$ ls
+$ cd jobs/  ---> here we will see the project done by used
+$ cd < project name> ls
+builds  config.xml  lastStable  lastSuccessful  nextBuildNumber
+$ cd ~  ----> to goto home dir
+$ ls
+$ cd workspace/  ---> Where our work will be stored
+
+******************Fixing issue fro Need Permission for Administration********************************
+$ visudo  ---> should be a root user
+
+Add this to sudo group
+jenkins ALL=(ALL:ALL) NOPASSWD:ALL
+
+$ su jenkins  ---> switch to jenkins user
+
+---------Manually to test whether it work on jenkins or not ---------------------
+ubuntip123-12-2456: 
+$ sudo -i
+$ su jenkins
+$ cd ~
+$ cd workspace/
+$ mkdir <Dir Name>
+**--->execute the commands here to test whether it works on jenkins or not
+** After completing delete the dir.
+
+
+***************************************** Process ****************************************
+Build by Shell:
+git clone https://github.com/wakaleo/game-of-life.git
+cd gameoflife
+mvn package
+
+
+******************************** Plugins Names And uses ***********************
+Green Balls--> to change the colour of compile state 
+               Red: Error Green: Ok
+			   
+
+
+
+
+
+
+
+
+
+
